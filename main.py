@@ -9,25 +9,22 @@ def main(screen):
 
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
     curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_GREEN)
-    curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_GREEN)
+    curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_BLUE)
     screen.bkgd(curses.color_pair(2)) 
     screen.refresh() 
 
     y,x = screen.getmaxyx()
-    win = curses.newwin(y-1, x-2, 1, 1) 
+    win = curses.newwin(y-2, x-2, 1, 1) 
     win.bkgd(curses.color_pair(0)) 
-    win.refresh() 
 
     borderwin = curses.newwin(1, x, y-1, 0)
     borderwin.bkgd(curses.color_pair(1))
-    borderwin.addstr(0,0,"BORDER")
-    borderwin.refresh() 
-
-    #blockwin = curses.newwin(1, 1, 10, 10)
-    #blockwin.bkgd(curses.color_pair(3))
-    #blockwin.refresh() 
 
     curses.setsyx(y//2,x//2)
+    borderwin.refresh() 
+    win.refresh() 
+
+    cell_list = []
 
     while 1:
         c = screen.getch()
@@ -42,9 +39,14 @@ def main(screen):
             move_cursor(win, cursor_y - 1, cursor_x)
         elif c in [curses.KEY_DOWN, ord('s'), ord('j')]:
             move_cursor(win, cursor_y + 1, cursor_x)
+        elif c == 10: #CR
+            draw_cell( (cursor_y, cursor_x), cell_list )
 
-        borderwin.addstr(0,0, "Cursor at Y={y}, X={x}".format(y=cursor_y, x=cursor_x))
+        borderwin.addstr(0,0, "CY={y}".format(y=cursor_y))
+        borderwin.addstr(0,10, "CX={x}".format(x=cursor_x))
+        borderwin.addstr(0,20, "Cells: {cells}".format(cells=len(cell_list)))
         borderwin.refresh()
+	for cell in cell_list: cell.refresh()
         win.refresh()
 
 def move_cursor(window, new_y, new_x):
@@ -58,7 +60,21 @@ def move_cursor(window, new_y, new_x):
     '''
 
     max_y, max_x = window.getmaxyx()
-    if new_y >= 0 and new_x >= 0 and new_y < max_y-1 and new_x < max_x:
+    if new_y >= 0 and new_x >= 0 and new_y <= max_y-1 and new_x < max_x:
         window.move(new_y, new_x)
+
+def draw_cell(coords, cell_list):
+    add_cell(coords, cell_list)
+
+#def delete_cell:
+   #pass
+
+def add_cell(coords, cell_list):
+    #initial window has two cols to acomodate addch()
+    window = curses.newwin(1, 2, coords[0]+1, coords[1]+1) 
+    window.bkgd(curses.color_pair(3)) 
+    window.addch(48)
+    window.resize(1,1) #correct window size to 1x1
+    cell_list.append(window)
 
 curses.wrapper(main) 
