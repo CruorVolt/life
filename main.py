@@ -20,7 +20,7 @@ def main(screen):
     borderwin = curses.newwin(1, x, y-1, 0)
     borderwin.bkgd(curses.color_pair(1))
 
-    curses.setsyx(y//2,x//2)
+    move_cursor(win, y//2, x//2)
     borderwin.refresh() 
     win.refresh() 
 
@@ -39,14 +39,19 @@ def main(screen):
             move_cursor(win, cursor_y - 1, cursor_x)
         elif c in [curses.KEY_DOWN, ord('s'), ord('j')]:
             move_cursor(win, cursor_y + 1, cursor_x)
-        elif c == 10: #CR
+        elif c == 10 or c == 32: #CR and SPACE
             draw_cell( (cursor_y, cursor_x), cell_list )
+        elif c == ord('i'):
+            display_help(win)
+            curses.curs_set(2) #never  visible cursor
 
         borderwin.addstr(0,0, "CY={y}".format(y=cursor_y))
         borderwin.addstr(0,10, "CX={x}".format(x=cursor_x))
         borderwin.addstr(0,20, "Cells: {cells}".format(cells=len(cell_list)))
         borderwin.refresh()
-	for cell in cell_list: cell.refresh()
+	for cell in cell_list: 
+            cell.redrawwin()
+            cell.refresh()
         win.refresh()
 
 def move_cursor(window, new_y, new_x):
@@ -73,8 +78,26 @@ def add_cell(coords, cell_list):
     #initial window has two cols to acomodate addch()
     window = curses.newwin(1, 2, coords[0]+1, coords[1]+1) 
     window.bkgd(curses.color_pair(3)) 
-    window.addch(48)
+    window.addch(curses.ACS_BULLET)
     window.resize(1,1) #correct window size to 1x1
     cell_list.append(window)
+
+def display_help(window):
+    curses.curs_set(0) #never  visible cursor
+    size = window.getmaxyx()
+    message = " ".join(["CONWAY'S GAME OF LIFE\n\n",
+        "Move the cursor with **** WASD or KJHL"])
+
+    help_pane = curses.newwin(6, 40, size[0]//2-3, size[1]//2-20) 
+    help_pane.bkgd(curses.color_pair(2)) 
+
+    help_pane.addstr(1,0,message)
+    help_pane.addch(3,22,curses.ACS_UARROW)
+    help_pane.addch(3,23,curses.ACS_DARROW)
+    help_pane.addch(3,24,curses.ACS_LARROW)
+    help_pane.addch(3,25,curses.ACS_RARROW)
+
+    help_pane.getch()
+    del help_pane
 
 curses.wrapper(main) 
