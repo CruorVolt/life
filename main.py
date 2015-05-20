@@ -54,7 +54,7 @@ def main(screen):
 
         borderwin.addstr(0,0, "CY={y}".format(y=cursor_y))
         borderwin.addstr(0,10, "CX={x}".format(x=cursor_x))
-        borderwin.addstr(0,20, "Cells: {cells}".format(cells=len(cell_list)))
+        borderwin.addstr(0,20, "Cells: {cells}".format(cells=game.cell_count()))
         borderwin.refresh()
 	for cell in cell_list: 
             cell.redrawwin()
@@ -77,18 +77,16 @@ def move_cursor(window, new_y, new_x):
 
 def draw_cell(coords, cell_list, game):
     game.toggle_cell(coords)
-    add_cell(coords, cell_list)
+    add_cell(coords, cell_list, game)
 
 #def delete_cell:
    #pass
 
-def add_cell(coords, cell_list):
+def add_cell(coords, cell_list, game):
     #initial window has two cols to acomodate addch()
     window = curses.newwin(1, 2, coords[0]+1, coords[1]+1) 
     window.bkgd(curses.color_pair(3)) 
     window.addch(curses.ACS_BULLET)
-
-    game.add_cell(coords)
 
     window.resize(1,1) #correct window size to 1x1
     cell_list.append(window)
