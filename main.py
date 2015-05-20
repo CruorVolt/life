@@ -1,5 +1,5 @@
 import curses.wrapper
-import life
+from life import *
 
 def main(screen): 
 
@@ -15,6 +15,9 @@ def main(screen):
 
     y,x = screen.getmaxyx()
     win = curses.newwin(y-2, x-2, 1, 1) 
+
+    game = Life( (y-2,x-2) )
+
     win.bkgd(curses.color_pair(0)) 
 
     borderwin = curses.newwin(1, x, y-1, 0)
@@ -28,7 +31,9 @@ def main(screen):
 
     while 1:
         c = screen.getch()
-        cursor_y, cursor_x = win.getyx()
+        cursor = win.getyx()
+        cursor_y = cursor[0]
+        cursor_x = cursor[1]
         if c == ord('q') or c == 27:
             exit()
         elif c in [curses.KEY_LEFT, ord('a'), ord('h')]:
@@ -40,10 +45,12 @@ def main(screen):
         elif c in [curses.KEY_DOWN, ord('s'), ord('j')]:
             move_cursor(win, cursor_y + 1, cursor_x)
         elif c == 10 or c == 32: #CR and SPACE
-            draw_cell( (cursor_y, cursor_x), cell_list )
+            draw_cell((cursor_y, cursor_x), cell_list, game)
         elif c == ord('i'):
             display_help(win)
-            curses.curs_set(2) #never  visible cursor
+            curses.curs_set(2)
+            win.redrawwin()
+            win.touchwin()
 
         borderwin.addstr(0,0, "CY={y}".format(y=cursor_y))
         borderwin.addstr(0,10, "CX={x}".format(x=cursor_x))
@@ -68,7 +75,8 @@ def move_cursor(window, new_y, new_x):
     if new_y >= 0 and new_x >= 0 and new_y <= max_y-1 and new_x < max_x:
         window.move(new_y, new_x)
 
-def draw_cell(coords, cell_list):
+def draw_cell(coords, cell_list, game):
+    game.toggle_cell(coords)
     add_cell(coords, cell_list)
 
 #def delete_cell:
@@ -79,6 +87,9 @@ def add_cell(coords, cell_list):
     window = curses.newwin(1, 2, coords[0]+1, coords[1]+1) 
     window.bkgd(curses.color_pair(3)) 
     window.addch(curses.ACS_BULLET)
+
+    game.add_cell(coords)
+
     window.resize(1,1) #correct window size to 1x1
     cell_list.append(window)
 
@@ -98,6 +109,6 @@ def display_help(window):
     help_pane.addch(3,25,curses.ACS_RARROW)
 
     help_pane.getch()
-    del help_pane
+    help_pane.erase
 
 curses.wrapper(main) 
