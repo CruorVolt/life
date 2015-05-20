@@ -10,7 +10,12 @@ class Life:
 
     def toggle_cell(self, cell):
         assert len(cell) == 2, "cell should be a 2-tuple coordinate pair (y,x)"
-        self.kill_cell(cell) if self.has_cell(cell) else self.add_cell(cell)
+        if self.has_cell(cell):
+            self.kill_cell(cell)
+            return True
+        else
+            self.add_cell(cell)
+            return False
 
     def add_cell(self, cell):
         assert len(cell) == 2, "cell should be a 2-tuple coordinate pair (y,x)"

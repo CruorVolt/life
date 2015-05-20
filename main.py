@@ -76,8 +76,11 @@ def move_cursor(window, new_y, new_x):
         window.move(new_y, new_x)
 
 def draw_cell(coords, cell_list, game):
-    game.toggle_cell(coords)
-    add_cell(coords, cell_list, game)
+    cell_exists = game.toggle_cell(coords)
+    if cell_exists:
+        delete_cell(coords, cell_list, game) #TODO: implement
+    else:
+    	add_cell(coords, cell_list, game)
 
 #def delete_cell:
    #pass
