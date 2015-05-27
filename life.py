@@ -13,7 +13,7 @@ class Life:
         if self.has_cell(cell):
             self.kill_cell(cell)
             return True
-        else
+        else:
             self.add_cell(cell)
             return False
 
@@ -32,3 +32,10 @@ class Life:
     def cell_count(self):
         return len(self.__live_cells)
 
+
+    def step(self):
+        for live in self.__live_cells:
+            for neighbor in get_neighbors(live):
+    
+    def get_neighbors(cell):
+        pass

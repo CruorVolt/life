@@ -1,4 +1,4 @@
-import curses.wrapper
+from curses import wrapper
 from life import *
 
 def main(screen): 
@@ -9,7 +9,7 @@ def main(screen):
 
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
     curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_GREEN)
-    curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_BLUE)
+    curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_CYAN)
     screen.bkgd(curses.color_pair(2)) 
     screen.refresh() 
 
@@ -56,7 +56,7 @@ def main(screen):
         borderwin.addstr(0,10, "CX={x}".format(x=cursor_x))
         borderwin.addstr(0,20, "Cells: {cells}".format(cells=game.cell_count()))
         borderwin.refresh()
-	for cell in cell_list: 
+        for cell in cell_list:
             cell.redrawwin()
             cell.refresh()
         win.refresh()
@@ -78,12 +78,12 @@ def move_cursor(window, new_y, new_x):
 def draw_cell(coords, cell_list, game):
     cell_exists = game.toggle_cell(coords)
     if cell_exists:
-        delete_cell(coords, cell_list, game) #TODO: implement
+        delete_cell(coords, cell_list, game)
     else:
     	add_cell(coords, cell_list, game)
 
-#def delete_cell:
-   #pass
+def delete_cell(coords, cell_list, game):
+    pass
 
 def add_cell(coords, cell_list, game):
     #initial window has two cols to acomodate addch()
@@ -112,4 +112,4 @@ def display_help(window):
     help_pane.getch()
     help_pane.erase
 
-curses.wrapper(main) 
+wrapper(main) 
