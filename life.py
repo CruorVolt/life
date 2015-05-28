@@ -17,6 +17,16 @@ class Life:
             self.add_cell(cell)
             return False
 
+    def in_game(self, cell):
+        y,x = cell
+        return y >= 0 and x >= 0 and y <= self.__size_y and x <= self.__size_x
+
+    def set_state(self, state):
+        self.__live_cells = state
+
+    def get_state(self):
+        return self.__live_cells
+
     def add_cell(self, cell):
         assert len(cell) == 2, "cell should be a 2-tuple coordinate pair (y,x)"
         self.__live_cells.append(cell)
@@ -32,10 +42,30 @@ class Life:
     def cell_count(self):
         return len(self.__live_cells)
 
-
-    def step(self):
+    def tick(self):
+        next_state = []
+        dead_neighbors = {}
         for live in self.__live_cells:
-            for neighbor in get_neighbors(live):
-    
-    def get_neighbors(cell):
-        pass
+            live_neighbors = 0
+            for neighbor in self.get_neighbors(live):
+                if (self.has_cell(neighbor)):
+                    live_neighbors += 1
+                else:
+                    if not neighbor in dead_neighbors:
+                        dead_neighbors[neighbor] = 1
+                    else:
+                        dead_neighbors[neighbor] += 1
+            if live_neighbors in [2,3]: #This cell survives
+                next_state.append(live)
+        for key in dead_neighbors.keys():
+            if dead_neighbors[key] == 3: #This cell is born
+                next_state.append(key)
+        self.set_state(next_state)
+                    
+    def get_neighbors(self, cell):
+        neighbors = []
+        for y in [cell[0] - 1, cell[0], cell[0] + 1]:
+            for x in [cell[1] - 1, cell[1], cell[1] + 1]:
+                if (y,x) != cell and self.in_game(cell):
+                    neighbors.append((y,x)) 
+        return neighbors

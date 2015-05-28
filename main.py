@@ -27,7 +27,7 @@ def main(screen):
     borderwin.refresh() 
     win.refresh() 
 
-    cell_list = []
+    cell_list = [] #curses window objects returned by newwin()
 
     while 1:
         c = screen.getch()
@@ -46,6 +46,9 @@ def main(screen):
             move_cursor(win, cursor_y + 1, cursor_x)
         elif c == 10 or c == 32: #CR and SPACE
             draw_cell((cursor_y, cursor_x), cell_list, game)
+            for cell in cell_list:
+                cell.redrawwin()
+                cell.refresh()
         elif c == ord('i'):
             display_help(win)
             curses.curs_set(2)
@@ -56,9 +59,6 @@ def main(screen):
         borderwin.addstr(0,10, "CX={x}".format(x=cursor_x))
         borderwin.addstr(0,20, "Cells: {cells}".format(cells=game.cell_count()))
         borderwin.refresh()
-        for cell in cell_list:
-            cell.redrawwin()
-            cell.refresh()
         win.refresh()
 
 def move_cursor(window, new_y, new_x):
@@ -97,10 +97,11 @@ def add_cell(coords, cell_list, game):
 def display_help(window):
     curses.curs_set(0) #never  visible cursor
     size = window.getmaxyx()
-    message = " ".join(["CONWAY'S GAME OF LIFE\n\n",
-        "Move the cursor with **** WASD or KJHL"])
+    message = " ".join(["        CONWAY'S  GAME  OF  LIFE\n\n",
+        "Move the cursor with **** WASD or KJHL\n\n",
+        "Paint/delete cells with SPACE or ENTER"])
 
-    help_pane = curses.newwin(6, 40, size[0]//2-3, size[1]//2-20) 
+    help_pane = curses.newwin(7, 40, size[0]//2-3, size[1]//2-20) 
     help_pane.bkgd(curses.color_pair(2)) 
 
     help_pane.addstr(1,0,message)
