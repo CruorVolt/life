@@ -4,27 +4,49 @@ from life import *
 class TestLife(unittest.TestCase):
 
     def setUp(self):
-        #block still life
-        self.game = Life( (10,10) )
-        self.game.add_cell((1,1))
-        self.game.add_cell((1,2))
-        self.game.add_cell((2,1))
-        self.game.add_cell((2,2))
+        pass
 
     def tearDown(self):
         self.game = None
 
-    def simple_tick_test(self):
-        self.game.tick()
+    def test_static_block(self):
         block_game = Life( (10,10) )
         block_game.add_cell((1,1))
         block_game.add_cell((1,2))
         block_game.add_cell((2,1))
         block_game.add_cell((2,2))
-        self.assertEqual(set(self.game.get_state()),set(block_game.get_state()), 
+
+        initial_state = block_game.get_state()
+        block_game.tick()
+        advanced_state = block_game.get_state()
+
+        self.assertEqual(set(initial_state),set(advanced_state), 
             'block game did not tick properly') 
 
-    def glider_tick_test
+    def test_glider(self):
+        
+        #initial glider state
+        glider_game = Life( (6,6) )        
+        glider_game.add_cell((1,3))
+        glider_game.add_cell((2,4))
+        glider_game.add_cell((3,4))
+        glider_game.add_cell((3,3))
+        glider_game.add_cell((3,2))
+
+        glider_game.tick()
+        state1 = glider_game.get_state()
+
+        #advanced glider state
+        glider_game_2 = Life( (6,6) )        
+        glider_game_2.add_cell((2,2))
+        glider_game_2.add_cell((2,4))
+        glider_game_2.add_cell((3,3))
+        glider_game_2.add_cell((3,4))
+        glider_game_2.add_cell((4,3))
+        state2 = glider_game_2.get_state()
+
+        self.assertEqual(set(state1),set(state2), 
+            'glider game did not tick properly') 
 
 if __name__ == '__main__':
     unittest.main()

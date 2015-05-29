@@ -18,7 +18,7 @@ class Life:
             return False
 
     def in_game(self, cell):
-        y,x = cell
+        y,x = cell #curses-style coordinate definitions
         return y >= 0 and x >= 0 and y <= self.__size_y and x <= self.__size_x
 
     def set_state(self, state):
@@ -43,6 +43,8 @@ class Life:
         return len(self.__live_cells)
 
     def tick(self):
+        '''Advance the game by one generation'''
+
         next_state = []
         dead_neighbors = {}
         for live in self.__live_cells:
