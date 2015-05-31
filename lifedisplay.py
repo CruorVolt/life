@@ -9,6 +9,8 @@ class LifeDisplay:
         self.cell_list = {} #curses window objects returned by newwin()
         self.game = None
         self.current_cursor = None
+        self.borderwin = None
+        self.wait_time = 0.01
         wrapper(self.init_curses)
 
 
@@ -41,9 +43,9 @@ class LifeDisplay:
 
         self.game = Life( (y-2,x-2) )
 
-        borderwin = curses.newwin(1, x, y-1, 0)
-        borderwin.bkgd(curses.color_pair(1))
-        borderwin.refresh() 
+        self.borderwin = curses.newwin(1, x, y-1, 0)
+        self.borderwin.bkgd(curses.color_pair(1))
+        self.refresh_border()
 
         while 1:
             c = screen.getch()
@@ -67,11 +69,23 @@ class LifeDisplay:
                 curses.flushinp() #cancel buffer: no lag on holding down key
             elif c == ord('r'):
                 self.run(screen)
+            elif c == ord('-'):
+                self.increment_wait(-0.01)
+            elif c == ord('='):
+                self.increment_wait(0.01)
 
-            borderwin.addstr(0,0, "CY={y}".format(y=cursor_y))
-            borderwin.addstr(0,10, "CX={x}".format(x=cursor_x))
-            borderwin.addstr(0,20, "Cells: {cells}".format(cells=self.game.cell_count()))
-            borderwin.refresh()
+            self.refresh_border()
+
+    def refresh_border(self):
+
+        #leave extra space for more digits
+        self.borderwin.addstr(0,0,"Cursor at {y},{x}      ".format(
+            y = self.current_cursor[0], x = self.current_cursor[1]))
+        self.borderwin.addstr(0,24, "Live Cells: {cells}   ".format(
+            cells=self.game.cell_count()))
+        self.borderwin.addstr(0,40, "Tick Delay: {speed}    ".format(
+            speed=self.wait_time))
+        self.borderwin.refresh()
 
     def move_cursor(self, window, new_cell):
         '''Moves the cursor to the new location, respecting window edges.
@@ -133,6 +147,7 @@ class LifeDisplay:
         main_window.nodelay(1) #getch becomes non-blocking
         while 1:
             self.step()
+            time.sleep(self.wait_time)
             c = main_window.getch()
             if c != -1: #wait for any press
                 break
@@ -148,7 +163,6 @@ class LifeDisplay:
             else:
                 window.bkgd(curses.color_pair(2)) #this cell is dead
             window.refresh()
-
 
     def display_help(self, window):
         size = window.getmaxyx()
@@ -168,5 +182,10 @@ class LifeDisplay:
         help_pane.getch()
         help_pane.erase()
         self.paint_cells()
+
+    def increment_wait(self, milliseconds_change):
+        self.wait_time += milliseconds_change
+        if self.wait_time < 0.01:
+            self.wait_time = 0.01
     
 #wrapper(main) 
