@@ -9,6 +9,7 @@ class Life:
         self.__live_cells = []
 
     def toggle_cell(self, cell):
+        '''Toggle the state of the specified cell in this generation'''
         assert len(cell) == 2, "cell should be a 2-tuple coordinate pair (y,x)"
         if self.has_cell(cell):
             self.kill_cell(cell)
@@ -18,7 +19,7 @@ class Life:
             return False
 
     def in_game(self, cell):
-        '''The cell is within the bounds of the game'''
+        '''Is the specified cell within the bounds of the game?'''
         y,x = cell #curses-style coordinate definitions
         return y >= 0 and x >= 0 and y <= self.__size_y and x <= self.__size_x
 
@@ -29,10 +30,12 @@ class Life:
         return self.__live_cells
 
     def add_cell(self, cell):
+        '''Add the specified cell to this generation'''
         assert len(cell) == 2, "cell should be a 2-tuple coordinate pair (y,x)"
         self.__live_cells.append(cell)
 
     def kill_cell(self, cell):
+        '''Remove the specified cell from this generation'''
         assert len(cell) == 2, "cell should be a 2-tuple coordinate pair (y,x)"
         self.__live_cells.remove(cell)
 
@@ -42,6 +45,7 @@ class Life:
         return True if cell in self.__live_cells else False
 
     def cell_count(self):
+        '''How many cells this generation has'''
         return len(self.__live_cells)
 
     def tick(self):
@@ -67,6 +71,7 @@ class Life:
         self.set_state(next_state)
                     
     def get_neighbors(self, cell):
+        '''Return list of 2-tuples representing the 8 neighboring cells'''
         neighbors = []
         for y in [cell[0] - 1, cell[0], cell[0] + 1]:
             for x in [cell[1] - 1, cell[1], cell[1] + 1]:
