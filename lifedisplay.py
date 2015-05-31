@@ -65,6 +65,8 @@ class LifeDisplay:
             elif c == ord('g'):
                 self.step()
                 curses.flushinp() #cancel buffer: no lag on holding down key
+            elif c == ord('r'):
+                self.run(screen)
 
             borderwin.addstr(0,0, "CY={y}".format(y=cursor_y))
             borderwin.addstr(0,10, "CX={x}".format(x=cursor_x))
@@ -126,13 +128,22 @@ class LifeDisplay:
             else:
                 window.bkgd(curses.color_pair(2)) #this cell is dead
             window.refresh()
+
+    def run(self, main_window):
+        main_window.nodelay(1) #getch becomes non-blocking
+        while 1:
+            self.step()
+            c = main_window.getch()
+            if c != -1: #wait for any press
+                break
+        main_window.nodelay(0) #reset getch behavior
     
     def paint_cells(self):
         for coords in self.cell_list.keys():
             window = self.cell_list[coords]
             if self.current_cursor == coords:
                 window.bkgd(curses.color_pair(4)) #redraw cursor location
-            if self.game.has_cell(coords):
+            elif self.game.has_cell(coords):
                 window.bkgd(curses.color_pair(3)) #this cell is alive
             else:
                 window.bkgd(curses.color_pair(2)) #this cell is dead
