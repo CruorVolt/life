@@ -60,7 +60,7 @@ class LifeDisplay:
             elif c == 10 or c == 32: #CR and SPACE
                 self.draw_cell((cursor_y, cursor_x))
             elif c == ord('i'):
-                self.display_help(win)
+                self.display_help(screen)
             elif c == ord('g'):
                 self.step()
                 curses.flushinp() #cancel buffer: no lag on holding down key
@@ -127,6 +127,16 @@ class LifeDisplay:
                 window.bkgd(curses.color_pair(2)) #this cell is dead
             window.refresh()
     
+    def paint_cells(self):
+        for coords in self.cell_list.keys():
+            window = self.cell_list[coords]
+            if self.game.has_cell(coords):
+                window.bkgd(curses.color_pair(3)) #this cell is alive
+            else:
+                window.bkgd(curses.color_pair(2)) #this cell is dead
+            window.refresh()
+
+
     def display_help(self, window):
         size = window.getmaxyx()
         message = " ".join(["        CONWAY'S  GAME  OF  LIFE\n\n",
@@ -134,7 +144,7 @@ class LifeDisplay:
             "Paint/delete cells with SPACE or ENTER"])
     
         help_pane = curses.newwin(7, 40, size[0]//2-3, size[1]//2-20) 
-        help_pane.bkgd(green) 
+        help_pane.bkgd(curses.color_pair(6)) 
     
         help_pane.addstr(1,0,message)
         help_pane.addch(3,22,curses.ACS_UARROW)
@@ -143,6 +153,7 @@ class LifeDisplay:
         help_pane.addch(3,25,curses.ACS_RARROW)
     
         help_pane.getch()
-        help_pane.erase
+        help_pane.erase()
+        self.paint_cells()
     
 #wrapper(main) 
