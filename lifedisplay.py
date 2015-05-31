@@ -1,4 +1,5 @@
 import curses
+import time
 from curses import wrapper
 from life import Life
 
@@ -12,7 +13,8 @@ class LifeDisplay:
 
     def init_curses(self, screen):
         curses.start_color() 
-
+        #curses.raw()
+        #curses.cbreak()
         curses.curs_set(0) #never visible cursor
 
         curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE) #bottom frame
@@ -59,8 +61,9 @@ class LifeDisplay:
                 self.draw_cell((cursor_y, cursor_x))
             elif c == ord('i'):
                 self.display_help(win)
-            elif c == ord('g'): #go
+            elif c == ord('g'):
                 self.step()
+                curses.flushinp() #cancel buffer: no lag on holding down key
 
             borderwin.addstr(0,0, "CY={y}".format(y=cursor_y))
             borderwin.addstr(0,10, "CX={x}".format(x=cursor_x))
