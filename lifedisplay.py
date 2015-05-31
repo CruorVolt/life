@@ -8,6 +8,7 @@ class LifeDisplay:
     def __init__(self):
         self.cell_list = {} #curses window objects returned by newwin()
         self.game = None
+        self.current_cursor = None
         wrapper(self.init_curses)
 
 
@@ -36,7 +37,7 @@ class LifeDisplay:
                 new_win.refresh() #or they won't fill the background right
                 self.cell_list[(col,row)] = new_win
 
-        current_cursor = self.move_cursor(screen, None, (y//2, x//2))
+        self.move_cursor(screen, (y//2, x//2))
 
         self.game = Life( (y-2,x-2) )
 
@@ -46,17 +47,17 @@ class LifeDisplay:
 
         while 1:
             c = screen.getch()
-            cursor_y, cursor_x = current_cursor
+            cursor_y, cursor_x = self.current_cursor
             if c == ord('q') or c == 27:
                 exit()
             elif c in [curses.KEY_LEFT, ord('a'), ord('h')]:
-                current_cursor = self.move_cursor(screen, current_cursor, (cursor_y, cursor_x - 1))
+                 self.move_cursor(screen, (cursor_y, cursor_x - 1))
             elif c in [curses.KEY_RIGHT, ord('d'), ord('l')]:
-                current_cursor = self.move_cursor(screen, current_cursor, (cursor_y, cursor_x + 1))
+                 self.move_cursor(screen, (cursor_y, cursor_x + 1))
             elif c in [curses.KEY_UP, ord('w'), ord('k')]:
-                current_cursor = self.move_cursor(screen, current_cursor, (cursor_y - 1, cursor_x))
+                 self.move_cursor(screen, (cursor_y - 1, cursor_x))
             elif c in [curses.KEY_DOWN, ord('s'), ord('j')]:
-                current_cursor = self.move_cursor(screen, current_cursor, (cursor_y + 1, cursor_x))
+                 self.move_cursor(screen, (cursor_y + 1, cursor_x))
             elif c == 10 or c == 32: #CR and SPACE
                 self.draw_cell((cursor_y, cursor_x))
             elif c == ord('i'):
@@ -70,7 +71,7 @@ class LifeDisplay:
             borderwin.addstr(0,20, "Cells: {cells}".format(cells=self.game.cell_count()))
             borderwin.refresh()
 
-    def move_cursor(self, window, current_cell, new_cell):
+    def move_cursor(self, window, new_cell):
         '''Moves the cursor to the new location, respecting window edges.
 
         window is the curses window object with the cursor to be moved. 
@@ -83,16 +84,15 @@ class LifeDisplay:
         max_y, max_x = window.getmaxyx()
         new_y, new_x = new_cell
         if new_y > 0 and new_x > 0 and new_y < max_y-2 and new_x < max_x-2:
-            if current_cell:
-                if self.game.has_cell(current_cell):
-                    self.cell_list[current_cell].bkgd(curses.color_pair(3)) #repaint live
+            if self.current_cursor:
+                if self.game.has_cell(self.current_cursor):
+                    self.cell_list[self.current_cursor].bkgd(curses.color_pair(3)) #repaint live
                 else:
-                    self.cell_list[current_cell].bkgd(curses.color_pair(2)) #repaint dead
-                self.cell_list[current_cell].refresh()
+                    self.cell_list[self.current_cursor].bkgd(curses.color_pair(2)) #repaint dead
+                self.cell_list[self.current_cursor].refresh()
             self.cell_list[new_cell].bkgd(curses.color_pair(4)) #paint new cursor
             self.cell_list[new_cell].refresh()
-            current_cell = new_cell
-        return current_cell
+            self.current_cursor = new_cell
     
     def draw_cell(self, coords):
         cell_exists = self.game.toggle_cell(coords)
@@ -130,6 +130,8 @@ class LifeDisplay:
     def paint_cells(self):
         for coords in self.cell_list.keys():
             window = self.cell_list[coords]
+            if self.current_cursor == coords:
+                window.bkgd(curses.color_pair(4)) #redraw cursor location
             if self.game.has_cell(coords):
                 window.bkgd(curses.color_pair(3)) #this cell is alive
             else:
