@@ -16,7 +16,7 @@ def main(screen):
     curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_BLACK) #dead cell
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_CYAN) #new cell
     curses.init_pair(4, curses.COLOR_BLACK, curses.COLOR_RED) #cursor
-    curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_BLUE)
+    curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_BLUE) #survived cell
     curses.init_pair(6, curses.COLOR_BLACK, curses.COLOR_GREEN) #border
 
     screen.bkgd(curses.color_pair(6)) 
@@ -110,11 +110,20 @@ def add_cell(coords):
 
 def step():
     global cell_list, game
+    
+    game_state = game.get_state()
+
     game.tick()
+
+    new_state = game.get_state() #THIS COPY PROCEDURE DOES NOT WORK
+
     for coords in cell_list.keys():
         window = cell_list[coords]
         if game.has_cell(coords):
-            window.bkgd(curses.color_pair(3)) #this cell is alive
+            if coords in game_state:
+                window.bkgd(curses.color_pair(5)) #this cell survived
+            else:
+                window.bkgd(curses.color_pair(3)) #this cell is alive
         else:
             window.bkgd(curses.color_pair(2)) #this cell is dead
         window.refresh()
