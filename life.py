@@ -18,6 +18,7 @@ class Life:
             return False
 
     def in_game(self, cell):
+        '''The cell is within the bounds of the game'''
         y,x = cell #curses-style coordinate definitions
         return y >= 0 and x >= 0 and y <= self.__size_y and x <= self.__size_x
 
@@ -36,6 +37,7 @@ class Life:
         self.__live_cells.remove(cell)
 
     def has_cell(self, cell):
+        '''The cell is currently live in this game'''
         assert len(cell) == 2, "cell should be a 2-tuple coordinate pair (y,x)"
         return True if cell in self.__live_cells else False
 

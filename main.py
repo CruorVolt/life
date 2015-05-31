@@ -56,6 +56,8 @@ def main(screen):
             draw_cell((cursor_y, cursor_x))
         elif c == ord('i'):
             display_help(win)
+        elif c == ord('g'): #go
+            step()
 
         borderwin.addstr(0,0, "CY={y}".format(y=cursor_y))
         borderwin.addstr(0,10, "CX={x}".format(x=cursor_x))
@@ -76,12 +78,14 @@ def move_cursor(window, current_cell, new_cell):
 
     max_y, max_x = window.getmaxyx()
     new_y, new_x = new_cell
-    if new_y >= 0 and new_x >= 0 and new_y <= max_y-1 and new_x < max_x:
+    if new_y > 0 and new_x > 0 and new_y < max_y-2 and new_x < max_x-2:
         if current_cell:
-            #if game.in_game
-            cell_list[current_cell].bkgd(curses.color_pair(2))
+            if game.has_cell(current_cell):
+                cell_list[current_cell].bkgd(curses.color_pair(3)) #repaint live
+            else:
+                cell_list[current_cell].bkgd(curses.color_pair(2)) #repaint dead
             cell_list[current_cell].refresh()
-        cell_list[new_cell].bkgd(curses.color_pair(4))
+        cell_list[new_cell].bkgd(curses.color_pair(4)) #paint new cursor
         cell_list[new_cell].refresh()
         current_cell = new_cell
     return current_cell
@@ -101,8 +105,19 @@ def delete_cell(coords):
 def add_cell(coords):
     global cell_list, game
     window = curses.newwin(1, 2, coords[0]+1, coords[1]+1) 
-    cell_list[coords].bkgd(curses.color_pair(3))
+    cell_list[coords].bkgd(curses.color_pair(3)) #live color
     cell_list[coords].refresh()
+
+def step():
+    global cell_list, game
+    game.tick()
+    for coords in cell_list.keys():
+        window = cell_list[coords]
+        if game.has_cell(coords):
+            window.bkgd(curses.color_pair(3)) #this cell is alive
+        else:
+            window.bkgd(curses.color_pair(2)) #this cell is dead
+        window.refresh()
 
 def display_help(window):
     size = window.getmaxyx()
