@@ -2,6 +2,11 @@ import curses
 import time
 from curses import wrapper
 from life import Life
+from decimal import Decimal
+
+
+MIN_TICK = Decimal('0.01')
+MAX_TICK = Decimal('5.00')
 
 class LifeDisplay:
 
@@ -10,7 +15,7 @@ class LifeDisplay:
         self.game = None
         self.current_cursor = None
         self.borderwin = None
-        self.wait_time = 0.01
+        self.wait_time = Decimal('0.01') #millisecond precision for addition
         wrapper(self.init_curses)
 
 
@@ -45,6 +50,7 @@ class LifeDisplay:
 
         self.borderwin = curses.newwin(1, x, y-1, 0)
         self.borderwin.bkgd(curses.color_pair(1))
+        self.borderwin.addstr(0, x-14, "G-Step  R-Run")
         self.refresh_border()
 
         while 1:
@@ -70,9 +76,9 @@ class LifeDisplay:
             elif c == ord('r'):
                 self.run(screen)
             elif c == ord('-'):
-                self.increment_wait(-0.01)
+                self.increment_wait(Decimal('-0.01'))
             elif c == ord('='):
-                self.increment_wait(0.01)
+                self.increment_wait(Decimal('0.01'))
 
             self.refresh_border()
 
@@ -83,8 +89,8 @@ class LifeDisplay:
             y = self.current_cursor[0], x = self.current_cursor[1]))
         self.borderwin.addstr(0,24, "Live Cells: {cells}   ".format(
             cells=self.game.cell_count()))
-        self.borderwin.addstr(0,40, "Tick Delay: {speed}    ".format(
-            speed=self.wait_time))
+        self.borderwin.addstr(0,40, "Tick Delay: {:1.0f} ms   ".format(
+            self.wait_time * 100))
         self.borderwin.refresh()
 
     def move_cursor(self, window, new_cell):
@@ -144,6 +150,8 @@ class LifeDisplay:
             window.refresh()
 
     def run(self, main_window):
+        self.borderwin.bkgd(curses.color_pair(4)) #inactive background
+        self.refresh_border()
         main_window.nodelay(1) #getch becomes non-blocking
         while 1:
             self.step()
@@ -152,6 +160,8 @@ class LifeDisplay:
             if c != -1: #wait for any press
                 break
         main_window.nodelay(0) #reset getch behavior
+        self.borderwin.bkgd(curses.color_pair(1)) #reset color
+        self.refresh_border()
     
     def paint_cells(self):
         for coords in self.cell_list.keys():
@@ -167,10 +177,12 @@ class LifeDisplay:
     def display_help(self, window):
         size = window.getmaxyx()
         message = " ".join(["        CONWAY'S  GAME  OF  LIFE\n\n",
-            "Move the cursor with **** WASD or KJHL\n\n",
-            "Paint/delete cells with SPACE or ENTER"])
+            "   Move the cursor with **** WASD or KJHL\n\n",
+            "   Paint/delete cells with SPACE or ENTER\n\n",
+            "Step through generations with G   Run with R\n\n",
+            "            Change tick speed: +-"])
     
-        help_pane = curses.newwin(7, 40, size[0]//2-3, size[1]//2-20) 
+        help_pane = curses.newwin(12, 46, size[0]//2-6, size[1]//2-23) 
         help_pane.bkgd(curses.color_pair(6)) 
     
         help_pane.addstr(1,0,message)
@@ -185,7 +197,7 @@ class LifeDisplay:
 
     def increment_wait(self, milliseconds_change):
         self.wait_time += milliseconds_change
-        if self.wait_time < 0.01:
-            self.wait_time = 0.01
-    
-#wrapper(main) 
+        if self.wait_time < MIN_TICK:
+            self.wait_time = MIN_TICK
+        elif self.wait_time > MAX_TICK:
+            self.wait_time = MAX_TICK
