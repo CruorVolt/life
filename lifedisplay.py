@@ -50,7 +50,7 @@ class LifeDisplay:
 
         self.borderwin = curses.newwin(1, x, y-1, 0)
         self.borderwin.bkgd(curses.color_pair(1))
-        self.borderwin.addstr(0, x-14, "G-Step  R-Run")
+        self.borderwin.addstr(0, x-23, "G-Step  R-Run  I-Info")
         self.refresh_border()
 
         while 1:
@@ -89,7 +89,7 @@ class LifeDisplay:
             y = self.current_cursor[0], x = self.current_cursor[1]))
         self.borderwin.addstr(0,24, "Live Cells: {cells}   ".format(
             cells=self.game.cell_count()))
-        self.borderwin.addstr(0,40, "Tick Delay: {:1.0f} ms   ".format(
+        self.borderwin.addstr(0,43, "Tick Delay: {:1.0f} ms   ".format(
             self.wait_time * 100))
         self.borderwin.refresh()
 
