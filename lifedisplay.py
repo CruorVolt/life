@@ -56,29 +56,31 @@ class LifeDisplay:
         while 1:
             c = screen.getch()
             cursor_y, cursor_x = self.current_cursor
-            if c == ord('q') or c == 27:
+            if c == ord('q') or c == 27: #exit curses
                 exit()
-            elif c in [curses.KEY_LEFT, ord('a'), ord('h')]:
+            elif c in [curses.KEY_LEFT, ord('a'), ord('h')]: #cursor left
                  self.move_cursor(screen, (cursor_y, cursor_x - 1))
-            elif c in [curses.KEY_RIGHT, ord('d'), ord('l')]:
+            elif c in [curses.KEY_RIGHT, ord('d'), ord('l')]: #cursor right
                  self.move_cursor(screen, (cursor_y, cursor_x + 1))
-            elif c in [curses.KEY_UP, ord('w'), ord('k')]:
+            elif c in [curses.KEY_UP, ord('w'), ord('k')]: #cursor up
                  self.move_cursor(screen, (cursor_y - 1, cursor_x))
-            elif c in [curses.KEY_DOWN, ord('s'), ord('j')]:
+            elif c in [curses.KEY_DOWN, ord('s'), ord('j')]: #cursor down
                  self.move_cursor(screen, (cursor_y + 1, cursor_x))
-            elif c == 10 or c == 32: #CR and SPACE
+            elif c == 10 or c == 32: #paint cell
                 self.draw_cell((cursor_y, cursor_x))
-            elif c == ord('i'):
+            elif c == ord('i'): #display info
                 self.display_help(screen)
-            elif c == ord('g'):
+            elif c == ord('g'): #step
                 self.step()
                 curses.flushinp() #cancel buffer: no lag on holding down key
-            elif c == ord('r'):
+            elif c == ord('r'): #run
                 self.run(screen)
-            elif c == ord('-'):
+            elif c == ord('-'): #tick delay up (+)
                 self.increment_wait(Decimal('-0.01'))
-            elif c == ord('='):
+            elif c == ord('='): #tick delay down (-)
                 self.increment_wait(Decimal('0.01'))
+            elif c == ord('e'): #clear board
+                self.clear()
 
             self.refresh_border()
 
@@ -92,6 +94,9 @@ class LifeDisplay:
         self.borderwin.addstr(0,43, "Tick Delay: {:1.0f} ms   ".format(
             self.wait_time * 100))
         self.borderwin.refresh()
+
+    def clear(self):
+        pass
 
     def move_cursor(self, window, new_cell):
         '''Moves the cursor to the new location, respecting window edges.
@@ -148,6 +153,7 @@ class LifeDisplay:
             else:
                 window.bkgd(curses.color_pair(2)) #this cell is dead
             window.refresh()
+        self.refresh_border()
 
     def run(self, main_window):
         self.borderwin.bkgd(curses.color_pair(4)) #inactive background
@@ -180,7 +186,8 @@ class LifeDisplay:
             "   Move the cursor with **** WASD or KJHL\n\n",
             "   Paint/delete cells with SPACE or ENTER\n\n",
             "Step through generations with G   Run with R\n\n",
-            "            Change tick speed: +-"])
+            "            Change tick speed: +-\n\n",
+            "           (press any key to close)"])
     
         help_pane = curses.newwin(12, 46, size[0]//2-6, size[1]//2-23) 
         help_pane.bkgd(curses.color_pair(6)) 
