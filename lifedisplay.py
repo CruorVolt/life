@@ -1,9 +1,9 @@
 import curses
 import time
 from curses import wrapper
-from life import Life
 from decimal import Decimal
 
+from life import Life
 
 MIN_TICK = Decimal('0.01')
 MAX_TICK = Decimal('5.00')
@@ -193,10 +193,10 @@ class LifeDisplay:
         help_pane.bkgd(curses.color_pair(6)) 
     
         help_pane.addstr(1,0,message)
-        help_pane.addch(3,22,curses.ACS_UARROW)
-        help_pane.addch(3,23,curses.ACS_DARROW)
-        help_pane.addch(3,24,curses.ACS_LARROW)
-        help_pane.addch(3,25,curses.ACS_RARROW)
+        help_pane.addch(3,25,curses.ACS_UARROW)
+        help_pane.addch(3,26,curses.ACS_DARROW)
+        help_pane.addch(3,27,curses.ACS_LARROW)
+        help_pane.addch(3,28,curses.ACS_RARROW)
     
         help_pane.getch()
         help_pane.erase()

@@ -48,6 +48,21 @@ class TestLife(unittest.TestCase):
         self.assertEqual(set(state1),set(state2), 
             'glider game did not tick properly') 
 
+    def test_toggle_cell(self):
+        test_game = Life( (10,10) )
+        test_game.add_cell((5,5))
+        test_game.add_cell((4,4))
+        test_game.add_cell((3,3))
+        test_game.add_cell((2,2))
+        test_game.toggle_cell((1,1))
+        test_game.toggle_cell((2,2))
+        test_game.toggle_cell((3,3))
+
+        game_set = set(test_game.get_state())
+        ground_set = set([(1,1), (4,4), (5,5)])
+
+        self.assertEqual(game_set, ground_set, "toggle_cell add/delete error")
+
 if __name__ == '__main__':
     unittest.main()
 
