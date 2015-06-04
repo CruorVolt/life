@@ -188,15 +188,30 @@ class LifeDisplay:
             "Step through generations with G   Run with R\n\n",
             "            Change tick speed: +-\n\n",
             "           (press any key to close)"])
+
+        header_message = "        CONWAY'S  GAME  OF  LIFE --- CONTROLS"
     
-        help_pane = curses.newwin(12, 46, size[0]//2-6, size[1]//2-23) 
+        message = "".join([
+            "    **** WASD or KJHL --- Move cursor\n\n",
+            "          SPACE/ENTER --- Paint \& delete cells\n\n",
+            "                    G --- Step through generation\n\n",
+            "                    R --- Run\n\n",
+            "                   +- --- Change tick speed: n\n\n\n",
+            "           (press any key to close)"
+        ])
+
+        #header_pane = curses.newwin(3,52, size[0]//2-6+10, size[1]//2-26)
+        header_pane = curses.newwin(3,52, 1,1)
+        header_pane.bkgd(curses.color_pair(1)) 
+        help_pane = curses.newwin(13, 52, size[0]//2-6+3, size[1]//2-26) 
         help_pane.bkgd(curses.color_pair(6)) 
     
+        header_pane.addstr(1,0,header_message)
         help_pane.addstr(1,0,message)
-        help_pane.addch(3,25,curses.ACS_UARROW)
-        help_pane.addch(3,26,curses.ACS_DARROW)
-        help_pane.addch(3,27,curses.ACS_LARROW)
-        help_pane.addch(3,28,curses.ACS_RARROW)
+        help_pane.addch(3,4,curses.ACS_UARROW)
+        help_pane.addch(3,5,curses.ACS_DARROW)
+        help_pane.addch(3,6,curses.ACS_LARROW)
+        help_pane.addch(3,7,curses.ACS_RARROW)
     
         help_pane.getch()
         help_pane.erase()
