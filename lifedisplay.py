@@ -182,36 +182,28 @@ class LifeDisplay:
 
     def display_help(self, window):
         size = window.getmaxyx()
-        message = " ".join(["        CONWAY'S  GAME  OF  LIFE\n\n",
-            "   Move the cursor with **** WASD or KJHL\n\n",
-            "   Paint/delete cells with SPACE or ENTER\n\n",
-            "Step through generations with G   Run with R\n\n",
-            "            Change tick speed: +-\n\n",
-            "           (press any key to close)"])
-
         header_message = "        CONWAY'S  GAME  OF  LIFE --- CONTROLS"
-    
         message = "".join([
-            "    **** WASD or KJHL --- Move cursor\n\n",
-            "          SPACE/ENTER --- Paint \& delete cells\n\n",
-            "                    G --- Step through generation\n\n",
-            "                    R --- Run\n\n",
-            "                   +- --- Change tick speed: n\n\n\n",
+            " **** WASD or KJHL . . . . Move cursor\n\n",
+            " SPACE/ENTER . . . . . . . Paint & delete cells\n\n",
+            " G . . . . . . . . . . . . Step through generation\n\n",
+            " R . . . . . . . . . . . . Run\n\n",
+            " +-  . . . . . . . . . . . Change tick speed\n\n\n",
             "           (press any key to close)"
         ])
 
-        #header_pane = curses.newwin(3,52, size[0]//2-6+10, size[1]//2-26)
-        header_pane = curses.newwin(3,52, 1,1)
-        header_pane.bkgd(curses.color_pair(1)) 
+        header_pane = curses.newwin(3,52, size[0]//2-6, size[1]//2-26)
+        header_pane.bkgd(curses.color_pair(6)) 
         help_pane = curses.newwin(13, 52, size[0]//2-6+3, size[1]//2-26) 
-        help_pane.bkgd(curses.color_pair(6)) 
+        help_pane.bkgd(curses.color_pair(1)) 
     
         header_pane.addstr(1,0,header_message)
         help_pane.addstr(1,0,message)
-        help_pane.addch(3,4,curses.ACS_UARROW)
-        help_pane.addch(3,5,curses.ACS_DARROW)
-        help_pane.addch(3,6,curses.ACS_LARROW)
-        help_pane.addch(3,7,curses.ACS_RARROW)
+        help_pane.addch(1,1,curses.ACS_UARROW)
+        help_pane.addch(1,2,curses.ACS_DARROW)
+        help_pane.addch(1,3,curses.ACS_LARROW)
+        help_pane.addch(1,4,curses.ACS_RARROW)
+        header_pane.refresh()
     
         help_pane.getch()
         help_pane.erase()
