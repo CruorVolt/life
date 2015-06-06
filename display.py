@@ -202,7 +202,7 @@ class LifeDisplay:
         ])
 
         header_pane = curses.newwin(3,52, size[0]//2-6, size[1]//2-26)
-        header_pane.bkgd(curses.color_pair(6)) 
+        header_pane.bkgd(curses.color_pair(5)) 
         help_pane = curses.newwin(13, 52, size[0]//2-6+3, size[1]//2-26) 
         help_pane.bkgd(curses.color_pair(1)) 
     
@@ -215,7 +215,14 @@ class LifeDisplay:
         header_pane.refresh()
     
         help_pane.getch()
-        help_pane.erase()
+
+        help_pane.clear()
+        help_pane.bkgd(curses.color_pair(6)) 
+        help_pane.refresh()
+
+        header_pane.clear()
+        header_pane.bkgd(curses.color_pair(6)) 
+        header_pane.refresh()
         self.paint_cells()
 
     def increment_wait(self, milliseconds_change):
