@@ -40,7 +40,7 @@ class LifeDisplay:
 
         pattern = reader.parse_args()
         if pattern is not None: #read game from file
-            y, x = pattern['max_y'], pattern['max_x']
+            y, x = pattern['max_y']+3, pattern['max_x']+3
             self.game = Life( (y-2,x-2), pattern['cells'] )
         else: #blank initial game
             y, x = screen_y, screen_x       
@@ -59,7 +59,8 @@ class LifeDisplay:
 
         self.borderwin = curses.newwin(1, screen_x, screen_y-1, 0)
         self.borderwin.bkgd(curses.color_pair(1))
-        self.borderwin.addstr(0, x-23, "G-Step  R-Run  I-Info")
+        self.borderwin.addstr(0, screen_x-23, "G-Step  R-Run  I-Info")
+        self.paint_cells()
         self.refresh_border()
 
         while 1:
@@ -164,8 +165,8 @@ class LifeDisplay:
         self.refresh_border()
 
     def run(self, main_window):
-        #self.borderwin.bkgd(curses.color_pair(4)) #inactive background
-        #self.refresh_border()
+        self.borderwin.bkgd(curses.color_pair(4)) #inactive background
+        self.refresh_border()
         main_window.nodelay(1) #getch becomes non-blocking
         while 1:
             self.step()
@@ -192,12 +193,12 @@ class LifeDisplay:
         size = window.getmaxyx()
         header_message = "        CONWAY'S  GAME  OF  LIFE --- CONTROLS"
         message = "".join([
-            " **** WASD or KJHL . . . . Move cursor\n\n",
-            " SPACE/ENTER . . . . . . . Paint & delete cells\n\n",
+            " **** WASD or KJHL . . . . . . . . . . Move cursor\n\n",
+            " SPACE/ENTER . . . . . . . . . . Paint/remove cell\n\n",
             " G . . . . . . . . . . . . Step through generation\n\n",
-            " R . . . . . . . . . . . . Run\n\n",
-            " +-  . . . . . . . . . . . Change tick speed\n\n\n",
-            "           (press any key to close)"
+            " R . . . . . . . . . . . . . . . . . . . . . . Run\n\n",
+            " +-  . . . . . . . . . . . . . . Change tick speed\n\n\n",
+            "             (press any key to close)"
         ])
 
         header_pane = curses.newwin(3,52, size[0]//2-6, size[1]//2-26)
