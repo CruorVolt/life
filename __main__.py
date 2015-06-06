@@ -1,5 +1,5 @@
 import sys
 
-from lifedisplay import LifeDisplay
+from display import LifeDisplay
 
 display = LifeDisplay()
