@@ -65,8 +65,3 @@ class TestLife(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-#assertEqual
-#assertTrue
-#assertFalse
-#assertRaises(TypeError)

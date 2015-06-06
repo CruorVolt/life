@@ -1,12 +1,17 @@
 import curses
 
+class CellOutOfBounds(Exception): pass
+
 class Life:
 
-    def __init__(self, size):
+    def __init__(self, size, cells=None):
         assert len(size) == 2, "size should be a 2-tuple in (y,x) format"
         self.__size_y = size[0]
         self.__size_x = size[1]
         self.__live_cells = []
+        if cells is not None:
+            for cell in cells:
+                self.add_cell((cell['y'], cell['x']))
 
     def toggle_cell(self, cell):
         '''Toggle the state of the specified cell in this generation'''
