@@ -10,8 +10,20 @@ class Life:
         self.__size_x = size[1]
         self.__live_cells = []
         if cells is not None:
+            cells = self.center(cells)
             for cell in cells:
                 self.add_cell((cell['y'], cell['x']))
+
+    def center(self, cell_dicts):
+        x_list, y_list = [], []
+        for pair_dict in cell_dicts:
+            y_list.append(pair_dict['y'])
+            x_list.append(pair_dict['x'])
+        min_y, max_y, min_x, max_x = min(y_list), max(y_list), min(x_list), max(x_list)
+        center_y, center_x = max_y - min_y, max_x - min_x
+        shift_y, shift_x = self.__size_y // 2 - center_y, self.__size_x // 2 - center_x
+        new_cells = zip(y_list, x_list)
+        return cell_dicts
 
     def toggle_cell(self, cell):
         '''Toggle the state of the specified cell in this generation'''
@@ -83,3 +95,6 @@ class Life:
                 if (y,x) != cell and self.in_game(cell):
                     neighbors.append((y,x)) 
         return neighbors
+
+if __name__ == "__main__":
+    thislist = ( (1,2), (3,4) )

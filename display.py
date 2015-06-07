@@ -36,16 +36,10 @@ class LifeDisplay:
 
         screen.bkgd(curses.color_pair(6)) 
         screen.refresh() 
-        screen_y,screen_x = screen.getmaxyx()
+        y,x = screen.getmaxyx()
 
         pattern = reader.parse_args()
-        if pattern is not None: #read game from file
-            y, x = pattern['max_y']+3, pattern['max_x']+3
-            self.game = Life( (y-2,x-2), pattern['cells'] )
-        else: #blank initial game
-            y, x = screen_y, screen_x       
-            self.game = Life( (y-2,x-2) )
-        self.y, self.x = y, x
+        self.game = Life((y-2,x-2), pattern)
 
         for col in range(1,y-2):
             for row in range(1, x-2):
@@ -56,10 +50,9 @@ class LifeDisplay:
 
         self.move_cursor(screen, (y//2, x//2))
 
-
-        self.borderwin = curses.newwin(1, screen_x, screen_y-1, 0)
+        self.borderwin = curses.newwin(1, x, y-1, 0)
         self.borderwin.bkgd(curses.color_pair(1))
-        self.borderwin.addstr(0, screen_x-23, "G-Step  R-Run  I-Info")
+        self.borderwin.addstr(0, x-23, "G-Step  R-Run  I-Info")
         self.paint_cells()
         self.refresh_border()
 
@@ -118,8 +111,9 @@ class LifeDisplay:
         the window's borders.
         '''
     
+        max_y,max_x = window.getmaxyx()
         new_y, new_x = new_cell
-        if new_y > 0 and new_x > 0 and new_y < self.y-2 and new_x < self.x-2:
+        if new_y > 0 and new_x > 0 and new_y < max_y-2 and new_x < max_x-2:
             if self.current_cursor:
                 if self.game.has_cell(self.current_cursor):
                     self.cell_list[self.current_cursor].bkgd(curses.color_pair(3)) #repaint live
