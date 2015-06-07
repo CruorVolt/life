@@ -97,6 +97,3 @@ class Life:
                 if (y,x) != cell and self.in_game(cell):
                     neighbors.append((y,x)) 
         return neighbors
-
-if __name__ == "__main__":
-    thislist = ( (1,2), (3,4) )

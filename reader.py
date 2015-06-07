@@ -22,6 +22,3 @@ def parse_args():
         return read_pattern_file(args[1])["cells"]
     else:
         return None
-
-if __name__ == '__main__':
-    print(zip(read_pattern_file(sys.argv[1])['cells'][0].items())[0])
