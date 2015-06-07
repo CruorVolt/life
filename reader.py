@@ -11,8 +11,10 @@ def read_pattern_file(filename):
 
 def write_pattern_file(filename, game):
     output = open(filename, "w")
-    js = json.dumps(game.get_state())
-    output.write(js)
+    cell_collection = {'cells':[]}
+    for cell in game.get_state():
+        cell_collection['cells'].append( {'y':cell[0], 'x':cell[1]} )
+    output.write(json.dumps(cell_collection))
     output.close()
 
 def parse_args():
