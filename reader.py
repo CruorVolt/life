@@ -10,7 +10,10 @@ def read_pattern_file(filename):
     return json.loads(open(filename, 'r').read())
 
 def write_pattern_file(filename, game):
-    pass
+    output = open(filename, "w")
+    js = json.dumps(game.get_state())
+    output.write(js)
+    output.close()
 
 def parse_args():
     args = sys.argv

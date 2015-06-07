@@ -82,6 +82,8 @@ class LifeDisplay:
                 self.increment_wait(Decimal('-0.01'))
             elif c == ord('='): #tick delay down (-)
                 self.increment_wait(Decimal('0.01'))
+            elif c == ord('o'): #write pattern to file
+                self.save_dialog(screen)
             elif c == ord('e'): #clear board
                 self.clear()
 
@@ -217,6 +219,22 @@ class LifeDisplay:
         header_pane.clear()
         header_pane.bkgd(curses.color_pair(6)) 
         header_pane.refresh()
+        self.paint_cells()
+
+    def save_dialog(self, window):
+        size = window.getmaxyx()
+        message = "          SAVE PATTERN TO FILE\n\n Enter file name > "
+
+        dialog = curses.newwin(5, 50, size[0]//2-3, size[1]//2-25) 
+        dialog.bkgd(curses.color_pair(1)) 
+    
+        dialog.addstr(1,1,message)
+    
+        curses.echo()
+        filename = dialog.getstr()
+        reader.write_pattern_file(filename, self.game)
+
+        curses.noecho()
         self.paint_cells()
 
     def increment_wait(self, milliseconds_change):
