@@ -10,9 +10,10 @@ class Life:
         self.__size_x = size[1]
         self.__live_cells = []
         if cells is not None:
-            for cell in self.center(cells):
-                #self.add_cell((cell['y'], cell['x']))
-                self.add_cell(cell)
+            try:
+                for cell in self.center(cells):
+                    self.add_cell(cell)
+            except CellOutOfBounds: raise
 
     def center(self, cell_dicts):
         x_list, y_list = [], []
@@ -51,6 +52,7 @@ class Life:
     def add_cell(self, cell):
         '''Add the specified cell to this generation'''
         assert len(cell) == 2, "cell should be a 2-tuple coordinate pair (y,x)"
+        if not self.in_game(cell): raise CellOutOfBounds
         self.__live_cells.append(cell)
 
     def kill_cell(self, cell):

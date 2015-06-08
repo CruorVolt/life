@@ -5,7 +5,7 @@ from curses import wrapper
 from decimal import Decimal
 
 import reader
-from life import Life
+from life import *
 
 MIN_TICK = Decimal('0.01')
 MAX_TICK = Decimal('5.00')
@@ -18,7 +18,19 @@ class LifeDisplay:
         self.current_cursor = None
         self.borderwin = None
         self.wait_time = Decimal('0.01') #millisecond precision for addition
-        wrapper(self.init_curses)
+        try:
+            wrapper(self.init_curses)
+
+        #Handle all errors here so wrapper can exit properly
+        except curses.error:
+            print("ERROR: current terminal not wide enough to build display")
+        except CellOutOfBounds:
+            print("ERROR: specified game state does not fit in this window")
+        except IOError as io:
+            if len(io.args) < 1:
+                print("ERROR: File read problem")
+            else:
+                print("ERROR: File '{file}' not found".format(file=io.args[0]))
 
 
     def init_curses(self, screen):
@@ -90,15 +102,16 @@ class LifeDisplay:
             self.refresh_border()
 
     def refresh_border(self):
-
-        #leave extra space for more digits
-        self.borderwin.addstr(0,0,"Cursor at {y},{x}      ".format(
-            y = self.current_cursor[0], x = self.current_cursor[1]))
-        self.borderwin.addstr(0,24, "Live Cells: {cells}   ".format(
-            cells=self.game.cell_count()))
-        self.borderwin.addstr(0,43, "Tick Delay: {:1.0f} ms   ".format(
-            self.wait_time * 100))
-        self.borderwin.refresh()
+        try:
+            #leave extra space for more digits
+            self.borderwin.addstr(0,0,"Cursor at {y},{x}      ".format(
+                y = self.current_cursor[0], x = self.current_cursor[1]))
+            self.borderwin.addstr(0,24, "Live Cells: {cells}   ".format(
+                cells=self.game.cell_count()))
+            self.borderwin.addstr(0,43, "Tick Delay: {:1.0f} ms   ".format(
+                self.wait_time * 100))
+            self.borderwin.refresh()
+        except curses.error: raise
 
     def clear(self):
         pass

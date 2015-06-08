@@ -23,7 +23,7 @@ def parse_args():
         raise ArgumentException('Expected 1 argument, {x} given'.format(x=len(args)-1))
     if len(args) == 2:
         if not os.path.isfile(args[1]):
-            raise IOError('File \'{x}\' not found'.format(x=args[1]))
+            raise IOError(args[1]) #pass up file name
         return read_pattern_file(args[1])["cells"]
     else:
         return None
