@@ -246,7 +246,16 @@ class LifeDisplay:
     
         curses.echo()
         filename = dialog.getstr()
-        reader.write_pattern_file(filename, self.game)
+        dialog.clear()
+        if reader.write_pattern_file(filename, self.game):
+            dialog.bkgd(curses.color_pair(6))
+            alert = "FILE {file} WRITTEN".format(file=filename[0:20])
+        else:
+            dialog.bkgd(curses.color_pair(4))
+            alert = "NO FILE WRITTEN"
+        dialog.addstr(2, 24 - len(alert)//2, alert)
+        dialog.refresh()
+        time.sleep(1)
 
         curses.noecho()
         self.paint_cells()
