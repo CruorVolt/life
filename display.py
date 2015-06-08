@@ -23,7 +23,7 @@ class LifeDisplay:
 
         #Handle all errors here so wrapper can exit properly
         except curses.error:
-            print("ERROR: current terminal not wide enough to build display")
+            print("ERROR: current terminal not large enough for proper display")
         except CellOutOfBounds:
             print("ERROR: specified game state does not fit in this window")
         except IOError as io:
@@ -64,7 +64,7 @@ class LifeDisplay:
 
         self.borderwin = curses.newwin(1, x, y-1, 0)
         self.borderwin.bkgd(curses.color_pair(1))
-        self.borderwin.addstr(0, x-23, "G-Step  R-Run  I-Info")
+        self.borderwin.addstr(0, x-30, "G-Step  R-Run  I-Info  Q-Quit")
         self.paint_cells()
         self.refresh_border()
 
@@ -206,13 +206,14 @@ class LifeDisplay:
             " SPACE/ENTER . . . . . . . . . . Paint/remove cell\n\n",
             " G . . . . . . . . . . . . Step through generation\n\n",
             " R . . . . . . . . . . . . . . . . . . . . . . Run\n\n",
-            " +-  . . . . . . . . . . . . . . Change tick speed\n\n\n",
+            " +-  . . . . . . . . . . . . . . Change tick speed\n\n",
+            " Q . . . . . . . . . . . . . . . . . . . . .  Quit\n\n\n",
             "             (press any key to close)"
         ])
 
         header_pane = curses.newwin(3,52, size[0]//2-6, size[1]//2-26)
         header_pane.bkgd(curses.color_pair(5)) 
-        help_pane = curses.newwin(13, 52, size[0]//2-6+3, size[1]//2-26) 
+        help_pane = curses.newwin(15, 52, size[0]//2-6+3, size[1]//2-26) 
         help_pane.bkgd(curses.color_pair(1)) 
     
         header_pane.addstr(1,0,header_message)

@@ -4,18 +4,19 @@ import os.path
 
 from life import Life
 
-class ArgumentException(Exception): pass
-
 def read_pattern_file(filename):
     return json.loads(open(filename, 'r').read())
 
 def write_pattern_file(filename, game):
+    if len(filename) == 0:
+        return False #indicate no file written
     output = open(filename, "w")
     cell_collection = {'cells':[]}
     for cell in game.get_state():
         cell_collection['cells'].append( {'y':cell[0], 'x':cell[1]} )
     output.write(json.dumps(cell_collection))
     output.close()
+    return True
 
 def parse_args():
     args = sys.argv
