@@ -245,11 +245,11 @@ class LifeDisplay:
         dialog.addstr(1,1,message)
     
         curses.echo()
-        filename = dialog.getstr()
+        filename = dialog.getstr() #byte array
         dialog.clear()
         if reader.write_pattern_file(filename, self.game):
             dialog.bkgd(curses.color_pair(6))
-            alert = "FILE {file} WRITTEN".format(file=filename[0:20])
+            alert = 'FILE {} WRITTEN'.format(str(filename)[1:20]) #strip 'b' indicator
         else:
             dialog.bkgd(curses.color_pair(4))
             alert = "NO FILE WRITTEN"
