@@ -82,7 +82,7 @@ class LifeDisplay:
                 self.increment_wait(Decimal('-0.01'))
             elif c == ord('='): #tick delay down (-)
                 self.increment_wait(Decimal('0.01'))
-            elif c == ord('o'): #write pattern to file
+            elif c == ord('f'): #write pattern to file
                 self.save_dialog(screen)
             elif c == ord('e'): #clear board
                 self.clear()

@@ -1,0 +1,62 @@
+<style>
+
+body {
+  font-family: sans-serif;
+}
+
+code { 
+  background-color: #eee;
+}
+
+.codeblock {
+  background-color: #eee; 
+  width: 50%;
+}
+
+</style>
+
+<h1>LIFE</h1>
+Conway's game of life displayed in the terminal via curses.
+
+<h3>Basics</h3>
+<code>python life</code> to start a blank game for editing,
+<code>python life &#60;filename&#62; </code> to load a file with a pre-defined game state.
+
+<h3>File Format</h3>
+Game states are in JSON format and contain a list of live cells in that state:
+
+<div class='codeblock'>
+<pre>
+<code> {
+  "cells": [
+    {"y": 2, "x": 2}, 
+    {"y": 3, "x": 3}, 
+    {"y": 4, "x": 3}, 
+    {"y": 4, "x": 2}, 
+    {"y": 4, "x": 1}
+  ]
+} </code>
+</pre>
+</div>
+
+Cell locations will be shifted on load to be centered relative 
+to the current window size. Some sample patterns are in <code>patterns/</code>.
+
+<h3>Controls</h3>
+<div class='codeblock'>
+<pre>
+<code>Move cursor . . . . Arrow keys, WASD or KJHL
+
+Paint/delete cell . . . . . . SPACE or ENTER
+
+Next generation . . . . . . . . . . . . .  G
+
+Run . . . . . . . . . . . . . . . . . . .  R
+
+Change tick speed  . . . . . . . . . . . +/-
+
+Output to file . . . . . . . . . . . . . . F
+
+Display help . . . . . . . . . . . . . . . I </code>
+</pre>
+</div>
