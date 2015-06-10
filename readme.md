@@ -1,6 +1,8 @@
 #LIFE
 Conway`s game of life displayed in the terminal via curses.
 
+<img src="https://raw.githubusercontent.com/CruorVolt/life/master/gosper.gif" width="600" />
+
 ##Basics
 `python life` to start a blank game for editing,
 `python life <filename>` to load a file with a pre-defined game state.
