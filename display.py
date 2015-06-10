@@ -245,7 +245,7 @@ class LifeDisplay:
         dialog.addstr(1,1,message)
     
         curses.echo()
-        filename = dialog.getstr() #byte array
+        filename = dialog.getstr() #byte array for some reason
         dialog.clear()
         if reader.write_pattern_file(filename, self.game):
             dialog.bkgd(curses.color_pair(6))
