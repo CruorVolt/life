@@ -34,6 +34,12 @@ class LifeDisplay:
 
 
     def init_curses(self, screen):
+        '''
+        Everything the board needs to display properly.
+        expects to get screen from being called by curses.wrapper()
+        '''
+
+        self.screen = screen
         curses.start_color() 
         #curses.raw()
         #curses.cbreak()
@@ -68,8 +74,13 @@ class LifeDisplay:
         self.paint_cells()
         self.refresh_border()
 
-        while 1:
-            c = screen.getch()
+        self.get_input();
+
+    def get_input(self):
+        while 1: #loop until getch sends exit()
+            screen = self.screen
+            func = screen.getch()
+
             cursor_y, cursor_x = self.current_cursor
             if c == ord('q') or c == 27: #exit curses
                 exit()

@@ -16,12 +16,12 @@ class Life:
             except CellOutOfBounds: raise
 
     def center(self, cell_dicts):
-	'''
+        '''
 	Center the cells in cell_dicts to the middle
-	of self's vertical/horizontal ranges.
+        of self's vertical/horizontal ranges.
 
-	cell_dicts is of the form [ {'x'= #, 'y' = #}, ... ]
-	'''
+        cell_dicts is of the form [ {'x'= #, 'y' = #}, ... ]
+        '''
 
         x_list, y_list = [], []
         for pair_dict in cell_dicts:
