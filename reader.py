@@ -4,10 +4,17 @@ import os.path
 
 from life import Life
 
+
 def read_pattern_file(filename):
     return json.loads(open(filename, 'r').read())
 
+
 def write_pattern_file(filename, game):
+    '''
+    Write the current state of game to 
+    the relative pathed fiel filename
+    '''
+
     if len(filename) == 0:
         return False #indicate no file written
     output = open(filename, "w")
@@ -18,7 +25,12 @@ def write_pattern_file(filename, game):
     output.close()
     return True
 
+
 def parse_args():
+    '''
+    Pass the pattern in the specified file,
+    '''
+
     args = sys.argv
     if len(args) > 2:
         raise ArgumentException('Expected 1 argument, {x} given'.format(x=len(args)-1))
