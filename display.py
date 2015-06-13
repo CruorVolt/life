@@ -79,7 +79,7 @@ class LifeDisplay:
     def get_input(self):
         while 1: #loop until getch sends exit()
             screen = self.screen
-            func = screen.getch()
+            c = screen.getch()
 
             cursor_y, cursor_x = self.current_cursor
             if c == ord('q') or c == 27: #exit curses
